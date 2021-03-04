@@ -30,6 +30,7 @@ Python api pulling weather data based on latitude and longitude data
     lang => not required (Ex: tr-TR, de-DE ...)
     
     	Ex: /v1/country/<countryId>/town/<townName>/tempUnit/<tempUnit>
+	    /v1/country/<countryId>/town/<townName>/lang/<lang>/tempUnit/<tempUnit>
 
 ##### Response Example
 
