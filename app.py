@@ -24,12 +24,13 @@ Ex: /v1/latitude/<span class="hljs-string">"LATITUDE"</span>/longitude/<span cla
 </code></pre><h5 id="get-towns-request">Get towns request</h5>
 <pre><code>https:<span class="hljs-regexp">//</span>weathersapi.herokuapp.com<span class="hljs-regexp">/v1/</span>towns
 </code></pre><h5 id="get-weathers-by-town-name">Get Weathers by Town Name</h5>
-<pre><code>countryId =&gt; required (<span class="hljs-keyword">Ex</span>: TR, <span class="hljs-keyword">US</span>, FR...)
-townName =&gt; required (<span class="hljs-keyword">Ex</span>: Erdemli, Eregli...)
+<pre><code>countryId =&gt; required (Ex: TR, US, FR...)
+townName =&gt; required (Ex: Erdemli, Eregli...)
 tempUnit =&gt; required (c =&gt; Celcius, f =&gt; Fahrenite)
-lang =&gt; not required (<span class="hljs-keyword">Ex</span>: tr-TR, <span class="hljs-keyword">de</span>-<span class="hljs-keyword">DE</span> ...)
-
-    <span class="hljs-keyword">Ex</span>: /v1/country/&lt;countryId&gt;/town/&lt;townName&gt;/tempUnit/&lt;tempUnit&gt;
+lang =&gt; not required (Ex: tr-TR, de-DE ...)
+<span class="hljs-symbol">
+    Ex:</span> <span class="hljs-meta-keyword">/v1/</span>country/<span class="hljs-params">&lt;countryId&gt;</span><span class="hljs-meta-keyword">/town/</span><span class="hljs-params">&lt;townName&gt;</span>/tempUnit/<span class="hljs-params">&lt;tempUnit&gt;</span>
+    <span class="hljs-meta-keyword">/v1/</span>country/<span class="hljs-params">&lt;countryId&gt;</span><span class="hljs-meta-keyword">/town/</span><span class="hljs-params">&lt;townName&gt;</span><span class="hljs-meta-keyword">/lang/</span><span class="hljs-params">&lt;lang&gt;</span>/tempUnit/<span class="hljs-params">&lt;tempUnit&gt;</span>
 </code></pre><h5 id="response-example">Response Example</h5>
 <pre><code>{
   <span class="hljs-attr">"afternoonTemperature"</span>: {
@@ -286,7 +287,7 @@ def getTemperatureByTownName( countryId, townName, tempUnit, lang):
     return jsonify(totalResults)
 
 @app.route("/v1/country/<string:countryId>/town/<string:townName>/tempUnit/<string:tempUnit>", methods=["GET"])
-def getTemperatureByTownName( countryId, townName, tempUnit):
+def getTemperatureByTownNameWithoutLang( countryId, townName, tempUnit):
     jsonFile = open("cities.json", "r", errors="ignore", encoding="utf-8").read()
     dictData = json.loads(jsonFile)
     latitude = str()
