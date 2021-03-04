@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask import make_response
 import requests
 from bs4 import BeautifulSoup
-
+import json
 app = Flask(__name__)
 
 @app.route('/')  
@@ -14,13 +14,20 @@ def home():
 <h5 id="-github-page-https-github-com-zekkontro-"><a href="https://github.com/zekkontro">Github Page</a></h5>
 <h4 id="-instagram-page-https-www-instagram-com-brtwlf-"><a href="https://www.instagram.com/brtwlf/">Instagram Page</a></h4>
 <h3 id="usage">Usage</h3>
-<h5 id="requests">Requests</h5>
+<h5 id="latitude-longitude-requests">Latitude-Longitude Requests</h5>
 <pre><code>latitude =&gt; required
 longitude =&gt; required
 tempUnit =&gt; required (c =&gt; Celcius, f =&gt; Fahrenite)
 lang =&gt; not required (Ex: tr-TR, de-DE ...)
 
 Ex: /v1/latitude/<span class="hljs-string">"LATITUDE"</span>/longitude/<span class="hljs-string">"LONGITUDE"</span>/tempUnit/<span class="hljs-string">"TEMP-UNIT"</span>/lang/<span class="hljs-string">"LANG-COUNTRY"</span>
+</code></pre><h5 id="get-towns-request">Get towns request</h5>
+<pre><code>https:<span class="hljs-regexp">//</span>weathersapi.herokuapp.com<span class="hljs-regexp">/v1/</span>towns
+</code></pre><h5 id="get-weathers-by-town-name">Get Weathers by Town Name</h5>
+<pre><code><span class="hljs-attr">countryId</span> =&gt; required (Ex: TR, US, FR...)
+<span class="hljs-attr">townName</span> =&gt; required (Ex: Erdemli, Eregli...)
+<span class="hljs-attr">tempUnit</span> =&gt; required (c =&gt; Celcius, f =&gt; Fahrenite)
+<span class="hljs-attr">lang</span> =&gt; not required (Ex: tr-TR, de-DE ...)
 </code></pre><h5 id="response-example">Response Example</h5>
 <pre><code>{
   <span class="hljs-attr">"afternoonTemperature"</span>: {
@@ -74,7 +81,7 @@ FITNESS <span class="hljs-keyword">FOR</span> A PARTICULAR PURPOSE <span class="
 LIABILITY, WHETHER <span class="hljs-keyword">IN</span> AN <span class="hljs-keyword">ACTION</span> <span class="hljs-keyword">OF</span> CONTRACT, TORT <span class="hljs-keyword">OR</span> OTHERWISE, ARISING <span class="hljs-keyword">FROM</span>,
 <span class="hljs-keyword">OUT</span> <span class="hljs-keyword">OF</span> <span class="hljs-keyword">OR</span> <span class="hljs-keyword">IN</span> <span class="hljs-keyword">CONNECTION</span> <span class="hljs-keyword">WITH</span> THE SOFTWARE <span class="hljs-keyword">OR</span> THE <span class="hljs-keyword">USE</span> <span class="hljs-keyword">OR</span> OTHER DEALINGS <span class="hljs-keyword">IN</span> THE
 SOFTWARE.
-</code></pre> """;  
+</code></pre>""";  
 
 
 class Temperature:
@@ -221,6 +228,75 @@ def getTemperatureByTownName( countryId, townName, tempUnit, lang):
                 longitude = data['lng']
 
     baseURL = "https://weather.com/"+lang +"/weather/today/l/"+latitude+","+longitude +"?par=google&temp=" + tempUnit if lang != None else "https://weather.com/weather/today/l/"+latitude+","+longitude +"?par=google&temp=" + tempUnit
+    source = requests.get(baseURL)
+    bs4 = BeautifulSoup(source.content, "html.parser")
+    currentTemperature = Temperature( bs4.find("div", attrs={"class" : "CurrentConditions--phraseValue--2xXSr", "data-testid" : "wxPhrase"}).text, bs4.find("span", attrs={"data-testid" : "TemperatureValue", "class" : "CurrentConditions--tempValue--3KcTQ"}).text, bs4.find("div", attrs={"class" : "CurrentConditions--precipValue--RBVJT"}).find("span").text if str(bs4.find("div", attrs={"class" : "CurrentConditions--precipValue--RBVJT"})) != "None"  else "--") 
+    morningTemperature = Temperature(str(bs4.find_all("svg", attrs={"class" : "Icon--icon--2AbGu Icon--fullTheme--3jU2v"})[0]) ,bs4.find_all("div", attrs={"data-testid" : "SegmentHighTemp", "class" : "Column--temp--2v_go"})[0].find("span").text , bs4.find_all("span", attrs={"class": "Column--precip--2H5Iw"})[0].text)
+    afternoonTemperature = Temperature(str(bs4.find_all("svg", attrs={"class" : "Icon--icon--2AbGu Icon--fullTheme--3jU2v"})[1]) ,bs4.find_all("div", attrs={"data-testid" : "SegmentHighTemp", "class" : "Column--temp--2v_go"})[1].find("span").text , bs4.find_all("span", attrs={"class": "Column--precip--2H5Iw"})[1].text)
+    eveningTemperature =  Temperature(str(bs4.find_all("svg", attrs={"class" : "Icon--icon--2AbGu Icon--fullTheme--3jU2v"})[2]) ,bs4.find_all("div", attrs={"data-testid" : "SegmentHighTemp", "class" : "Column--temp--2v_go"})[2].find("span").text , bs4.find_all("span", attrs={"class": "Column--precip--2H5Iw"})[2].text)
+    overnightTemperature = Temperature(str(bs4.find_all("svg", attrs={"class" : "Icon--icon--2AbGu Icon--fullTheme--3jU2v"})[3]) ,bs4.find_all("div", attrs={"data-testid" : "SegmentHighTemp", "class" : "Column--temp--2v_go"})[3].find("span").text , bs4.find_all("span", attrs={"class": "Column--precip--2H5Iw"})[3].text)
+    title = bs4.find("h1", attrs={"class" : "CurrentConditions--location--1Ayv3"}).text
+    wind = bs4.find("span", attrs={"class" : "Wind--windWrapper--1Va1P undefined"}).text
+    humidity = bs4.find("span", attrs={"data-testid": "PercentageValue"}).text
+    dewPoint = bs4.find("div", attrs={"class" : "WeatherDetailsListItem--wxData--23DP5"}).find("span", attrs={"data-testid" : "TemperatureValue"}).text
+    pressure = bs4.find("span", attrs={"class":"Pressure--pressureWrapper--3olKd undefined"}).text
+    moonPhase = bs4.find_all("div", attrs={"class": "WeatherDetailsListItem--wxData--23DP5", "data-testid" : "wxData"})[-1].text
+    sunriseTime = bs4.find_all("p", attrs={"class" : "SunriseSunset--dateValue--2nwgx"})[0].text
+    sunsetTime = bs4.find_all("p", attrs={"class" : "SunriseSunset--dateValue--2nwgx"})[1].text
+    highLowRate = bs4.find_all("div", attrs={"class" : "WeatherDetailsListItem--wxData--23DP5"})[0].text
+    uvIndex = bs4.find("span", attrs={"data-testid" : "UVIndexValue"}).text
+    totalResults = {
+        "currentTemperature" : {
+            "weatherTemperature" : currentTemperature.weatherTemperature,
+            "chanceOfRain" : currentTemperature.chanceOfRain,
+            "weatherStatus" : currentTemperature.weatherStatus
+        },
+
+        "morningTemperature" : {
+            "weatherTemperature" : morningTemperature.weatherTemperature,
+            "chanceOfRain" : morningTemperature.chanceOfRain,
+        },
+        "afternoonTemperature" : {
+            "weatherTemperature" : afternoonTemperature.weatherTemperature,
+            "chanceOfRain" : afternoonTemperature.chanceOfRain,
+        },
+        "eveningTemperature" : {
+            "weatherTemperature" : eveningTemperature.weatherTemperature,
+            "chanceOfRain" : eveningTemperature.chanceOfRain,
+        },
+        "overnightTemperature" : {
+            "weatherTemperature" : overnightTemperature.weatherTemperature,
+            "chanceOfRain" : overnightTemperature.chanceOfRain,
+        },
+        "title" : title,
+        "wind" : wind,
+        "humidity" : humidity,
+        "dewPoint" : dewPoint,
+        "pressure" : pressure,
+        "highLowRate" : highLowRate,
+        "moonPhase" : str(moonPhase),
+        "sunriseTime" : sunriseTime,
+        "uvIndex" : uvIndex,
+        "sunsetTime" : sunsetTime,
+        
+    }
+
+    return jsonify(totalResults)
+
+@app.route("/v1/country/<string:countryId>/town/<string:townName>/tempUnit/<string:tempUnit>", methods=["GET"])
+def getTemperatureByTownName( countryId, townName, tempUnit):
+    jsonFile = open("cities.json", "r", errors="ignore", encoding="utf-8").read()
+    dictData = json.loads(jsonFile)
+    latitude = str()
+    longitude = str()
+    filteredDict = dict()
+    for data in dictData:
+         if data["country"] == countryId:
+             if data['name'] == townName:
+                latitude = data['lat']
+                longitude = data['lng']
+
+    baseURL = "https://weather.com/weather/today/l/"+latitude+","+longitude +"?par=google&temp=" + tempUnit 
     source = requests.get(baseURL)
     bs4 = BeautifulSoup(source.content, "html.parser")
     currentTemperature = Temperature( bs4.find("div", attrs={"class" : "CurrentConditions--phraseValue--2xXSr", "data-testid" : "wxPhrase"}).text, bs4.find("span", attrs={"data-testid" : "TemperatureValue", "class" : "CurrentConditions--tempValue--3KcTQ"}).text, bs4.find("div", attrs={"class" : "CurrentConditions--precipValue--RBVJT"}).find("span").text if str(bs4.find("div", attrs={"class" : "CurrentConditions--precipValue--RBVJT"})) != "None"  else "--") 
