@@ -28,6 +28,8 @@ Python api pulling weather data based on latitude and longitude data
     townName => required (Ex: Erdemli, Eregli...)
     tempUnit => required (c => Celcius, f => Fahrenite)
     lang => not required (Ex: tr-TR, de-DE ...)
+    
+    	Ex: /v1/country/<countryId>/town/<townName>/tempUnit/<tempUnit>
 
 ##### Response Example
 
