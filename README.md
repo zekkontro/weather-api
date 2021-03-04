@@ -1,7 +1,7 @@
 # Weather API
 
 Python api pulling weather data based on latitude and longitude data
-SITE URL: 
+SITE URL: https://weathersapi.herokuapp.com/
 
 ### Author
 #### Mustafa Berat Kurt - zekkontro
