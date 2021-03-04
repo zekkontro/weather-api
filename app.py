@@ -24,10 +24,12 @@ Ex: /v1/latitude/<span class="hljs-string">"LATITUDE"</span>/longitude/<span cla
 </code></pre><h5 id="get-towns-request">Get towns request</h5>
 <pre><code>https:<span class="hljs-regexp">//</span>weathersapi.herokuapp.com<span class="hljs-regexp">/v1/</span>towns
 </code></pre><h5 id="get-weathers-by-town-name">Get Weathers by Town Name</h5>
-<pre><code><span class="hljs-attr">countryId</span> =&gt; required (Ex: TR, US, FR...)
-<span class="hljs-attr">townName</span> =&gt; required (Ex: Erdemli, Eregli...)
-<span class="hljs-attr">tempUnit</span> =&gt; required (c =&gt; Celcius, f =&gt; Fahrenite)
-<span class="hljs-attr">lang</span> =&gt; not required (Ex: tr-TR, de-DE ...)
+<pre><code>countryId =&gt; required (<span class="hljs-keyword">Ex</span>: TR, <span class="hljs-keyword">US</span>, FR...)
+townName =&gt; required (<span class="hljs-keyword">Ex</span>: Erdemli, Eregli...)
+tempUnit =&gt; required (c =&gt; Celcius, f =&gt; Fahrenite)
+lang =&gt; not required (<span class="hljs-keyword">Ex</span>: tr-TR, <span class="hljs-keyword">de</span>-<span class="hljs-keyword">DE</span> ...)
+
+    <span class="hljs-keyword">Ex</span>: /v1/country/&lt;countryId&gt;/town/&lt;townName&gt;/tempUnit/&lt;tempUnit&gt;
 </code></pre><h5 id="response-example">Response Example</h5>
 <pre><code>{
   <span class="hljs-attr">"afternoonTemperature"</span>: {
