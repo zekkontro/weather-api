@@ -1,7 +1,7 @@
 # Weather API
 
 Python api pulling weather data based on latitude and longitude data
-SITE URL: https://weathersapi.herokuapp.com/
+
 
 ### Author
 #### Mustafa Berat Kurt - zekkontro
@@ -9,14 +9,25 @@ SITE URL: https://weathersapi.herokuapp.com/
 #### [Instagram Page](https://www.instagram.com/brtwlf/)
 
 ### Usage
-##### Requests
-
+##### Latitude-Longitude Requests
+	
     latitude => required
     longitude => required
     tempUnit => required (c => Celcius, f => Fahrenite)
     lang => not required (Ex: tr-TR, de-DE ...)
     
 	Ex: /v1/latitude/"LATITUDE"/longitude/"LONGITUDE"/tempUnit/"TEMP-UNIT"/lang/"LANG-COUNTRY"
+
+##### Get towns request
+
+    https://weathersapi.herokuapp.com/v1/towns
+
+##### Get Weathers by Town Name
+
+    countryId => required (Ex: TR, US, FR...)
+    townName => required (Ex: Erdemli, Eregli...)
+    tempUnit => required (c => Celcius, f => Fahrenite)
+    lang => not required (Ex: tr-TR, de-DE ...)
 
 ##### Response Example
 
