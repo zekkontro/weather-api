@@ -8,8 +8,7 @@ app = Flask(__name__)
 @app.route('/')  
 def home():  
     return """<h1 id="weather-api">Weather API</h1>
-<p>Python api pulling weather data based on latitude and longitude data
-SITE URL: </p>
+<p>Python api pulling weather data based on latitude and longitude data</p>
 <h3 id="author">Author</h3>
 <h4 id="mustafa-berat-kurt-zekkontro">Mustafa Berat Kurt - zekkontro</h4>
 <h5 id="-github-page-https-github-com-zekkontro-"><a href="https://github.com/zekkontro">Github Page</a></h5>
